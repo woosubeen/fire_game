@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>護安神火挑戰🔥</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #fffbe6;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #cc0000;
+    }
+    #gameArea {
+      position: relative;
+      width: 320px;
+      height: 400px;
+      margin: 20px auto;
+      background: url('A_pixel_art_digital_illustration_features_a_lit_in.png') no-repeat center/cover;
+      border: 3px solid #cc0000;
+      border-radius: 12px;
+    }
+    #fire {
+      width: 60px;
+      height: 80px;
+      background: url('A_pixel_art_animated_GIF_features_a_flickering_fla.png') no-repeat center/contain;
+      position: absolute;
+      top: 120px;
+      left: 130px;
+    }
+    #status {
+      margin: 10px 0;
+      font-size: 20px;
+      color: #cc5500;
+    }
+    #lives, #timer {
+      font-size: 18px;
+      margin: 5px;
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 護安神火挑戰 🔥</h1>
+  <div id="gameArea">
+    <div id="fire"></div>
+  </div>
+  <div id="status">準備好了嗎？點擊或滑動來保護香火！</div>
+  <div id="lives">❤️❤️❤️</div>
+  <div id="timer">剩餘時間：60 秒</div>
+
+  <script>
+    let lives = 3;
+    let timeLeft = 60;
+    let gameActive = true;
+    const statusText = document.getElementById('status');
+    const livesText = document.getElementById('lives');
+    const timerText = document.getElementById('timer');
+    const gameArea = document.getElementById('gameArea');
+
+    function updateLives() {
+      livesText.textContent = '❤️'.repeat(lives);
+    }
+
+    function showShake() {
+      gameArea.classList.add('shake');
+      setTimeout(() => gameArea.classList.remove('shake'), 300);
+    }
+
+    function startGame() {
+      const windInterval = setInterval(() => {
+        if (!gameActive) return clearInterval(windInterval);
+
+        statusText.textContent = '🌬️ 一陣風吹來了！快點擊或滑動保護香火！';
+        showShake();
+
+        let protected = false;
+        const protectHandler = () => protected = true;
+        window.addEventListener('touchstart', protectHandler, { once: true });
+
+        setTimeout(() => {
+          if (!protected) {
+            lives--;
+            updateLives();
+            if (lives === 0) {
+              statusText.textContent = '💨 香火熄滅了……挑戰失敗！';
+              gameActive = false;
+              clearInterval(windInterval);
+            } else {
+              statusText.textContent = '你來不及保護香火，小心！';
+            }
+          } else {
+            statusText.textContent = '✅ 你成功保住了香火！';
+          }
+        }, 1500);
+      }, 4000);
+
+      const countdown = setInterval(() => {
+        if (!gameActive) return clearInterval(countdown);
+        timeLeft--;
+        timerText.textContent = `剩餘時間：${timeLeft} 秒`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          statusText.textContent = '🎉 你成功守住香火，神明賜你平安與福氣！';
+          gameActive = false;
+        }
+      }, 1000);
+    }
+
+    // 自動開始遊戲
+    window.onload = () => {
+      updateLives();
+      startGame();
+    }
+  </script>
+</body>
+</html>
