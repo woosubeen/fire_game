@@ -400,24 +400,22 @@
         }
 
         function gameOver() {
-            clearInterval(gameState.timerInterval);
-            clearTimeout(gameState.roundTimer);
-            gameState.isPlaying = false;
-            
-            document.getElementById('final-score').textContent = gameState.score;
-            
-            let resultText = '';
-            if (gameState.score >= 100) {
-                resultText = '🔥 完美守護香火！功德無量！ 🔥';
-            } else if (gameState.score >= 50) {
-                resultText = '👍 香火差點熄滅，但守護得很好！';
-            } else {
-                resultText = '💨 香火熄滅了...請重新挑戰！';
-            }
-            
-            document.getElementById('game-result').textContent = resultText;
-            document.getElementById('game-over-screen').classList.remove('hidden');
-        }
+    clearInterval(gameState.timerInterval);
+    clearTimeout(gameState.roundTimer);
+    gameState.isPlaying = false;
+
+    document.getElementById('final-score').textContent = gameState.score;
+
+    let resultText = '';
+    if (gameState.score >= 200) {
+        resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+    } else {
+        resultText = '💨 香火熄滅了...請重新挑戰！';
+    }
+
+    document.getElementById('game-result').textContent = resultText;
+    document.getElementById('game-over-screen').classList.remove('hidden');
+}
 
         // 터치 이벤트 처리
         swipeArea.addEventListener('touchstart', (e) => {
