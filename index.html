@@ -1,130 +1,130 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>護安神火挑戰🔥</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>fire_game - 護安神火守護戰🔥</title>
   <style>
     body {
-      margin: 0;
       font-family: sans-serif;
       background: #fffbe6;
       text-align: center;
       padding: 20px;
     }
+
     h1 {
       color: #cc0000;
+      font-size: 28px;
     }
-    #gameArea {
-      position: relative;
-      width: 320px;
-      height: 400px;
-      margin: 20px auto;
-      background: url('background.png') no-repeat center/cover;
-      border: 3px solid #cc0000;
-      border-radius: 12px;
+
+    #direction {
+      font-size: 40px;
+      margin: 30px 0;
     }
-    #fire {
-      width: 60px;
-      height: 80px;
-      background: url('fire.png') no-repeat center/contain;
-      position: absolute;
-      top: 120px;
-      left: 130px;
-    }
+
     #status {
-      margin: 10px 0;
       font-size: 20px;
-      color: #cc5500;
+      margin: 20px 0;
     }
-    #lives, #timer {
+
+    #gameArea {
+      width: 100%;
+      max-width: 350px;
+      height: 350px;
+      margin: 0 auto;
+      border: 3px solid #cc0000;
+      border-radius: 16px;
+      background: url('https://yourusername.github.io/fire_game/background.png') no-repeat center center;
+      background-size: cover;
+      line-height: 350px;
+      font-size: 24px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    button {
       font-size: 18px;
-      margin: 5px;
+      padding: 10px 20px;
+      margin-top: 30px;
+      background-color: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 8px;
     }
-    .shake {
-      animation: shake 0.3s;
-    }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      50% { transform: translateX(10px); }
-      75% { transform: translateX(-10px); }
-      100% { transform: translateX(0); }
+
+    button:hover {
+      background-color: #a00000;
     }
   </style>
 </head>
 <body>
-  <h1>🔥 護安神火挑戰 🔥</h1>
-  <div id="gameArea">
-    <div id="fire"></div>
-  </div>
-  <div id="status">準備好了嗎？點擊或滑動來保護香火！</div>
-  <div id="lives">❤️❤️❤️</div>
-  <div id="timer">剩餘時間：15 秒</div>
+  <h1>護安神火守護戰 🔥</h1>
+  <div id="direction">請按「開始挑戰」</div>
+  <div id="gameArea">在此滑動！</div>
+  <div id="status"></div>
+  <button onclick="startGame()">開始挑戰</button>
 
   <script>
-    let lives = 3;
-    let timeLeft = 15;
-    let gameActive = true;
-    const statusText = document.getElementById('status');
-    const livesText = document.getElementById('lives');
-    const timerText = document.getElementById('timer');
-    const gameArea = document.getElementById('gameArea');
-
-    function updateLives() {
-      livesText.textContent = '❤️'.repeat(lives);
-    }
-
-    function showShake() {
-      gameArea.classList.add('shake');
-      setTimeout(() => gameArea.classList.remove('shake'), 300);
-    }
+    const directions = ["←", "↑", "↓", "→"];
+    let current = "";
+    let successCount = 0;
+    let gameEnded = false;
 
     function startGame() {
-      const windInterval = setInterval(() => {
-        if (!gameActive) return clearInterval(windInterval);
+      successCount = 0;
+      gameEnded = false;
+      nextRound();
+    }
 
-        statusText.textContent = '🌬️ 一陣風吹來了！快點擊或滑動保護香火！';
-        showShake();
+    function nextRound() {
+      current = directions[Math.floor(Math.random() * 4)];
+      document.getElementById("direction").innerText = `請向 ${current} 滑動！`;
+      document.getElementById("status").innerText = `成功次數：${successCount}/5`;
+    }
 
-        let protected = false;
-        const protectHandler = () => protected = true;
-        window.addEventListener('touchstart', protectHandler, { once: true });
+    const area = document.getElementById("gameArea");
+    let startX = 0;
+    let startY = 0;
 
-        setTimeout(() => {
-          if (!protected) {
-            lives--;
-            updateLives();
-            if (lives === 0) {
-              statusText.textContent = '💨 香火熄滅了……挑戰失敗！';
-              gameActive = false;
-              clearInterval(windInterval);
-            } else {
-              statusText.textContent = '你來不及保護香火，小心！';
-            }
-          } else {
-            statusText.textContent = '✅ 你成功保住了香火！';
-          }
-        }, 1500);
-      }, 4000);
+    area.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+    });
 
-      const countdown = setInterval(() => {
-        if (!gameActive) return clearInterval(countdown);
-        timeLeft--;
-        timerText.textContent = `剩餘時間：${timeLeft} 秒`;
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          statusText.textContent = '🎉 你成功守住香火，神明賜你平安與福氣！';
-          gameActive = false;
+    area.addEventListener("touchend", (e) => {
+      if (gameEnded) return;
+
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      let swipe = "";
+      if (Math.max(absX, absY) < 30) return; // 너무 짧으면 무시
+
+      if (absX > absY) {
+        swipe = deltaX > 0 ? "→" : "←";
+      } else {
+        swipe = deltaY > 0 ? "↓" : "↑";
+      }
+
+      if (swipe === current) {
+        successCount++;
+        if (successCount >= 5) {
+          document.getElementById("direction").innerText = "挑戰成功！🔥神火穩住了！";
+          document.getElementById("status").innerText = "";
+          gameEnded = true;
+        } else {
+          nextRound();
         }
-      }, 1000);
-    }
-
-    // 自動開始遊戲
-    window.onload = () => {
-      updateLives();
-      startGame();
-    }
+      } else {
+        document.getElementById("direction").innerText = "挑戰失敗！🔥神火熄滅...";
+        document.getElementById("status").innerText = "";
+        gameEnded = true;
+      }
+    });
   </script>
 </body>
 </html>
