@@ -1,130 +1,496 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>fire_game - 護安神火守護戰🔥</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #fffbe6;
-      text-align: center;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>불꽃지키기 - 護安宮 향불 지키기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
 
-    h1 {
-      color: #cc0000;
-      font-size: 28px;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
 
-    #direction {
-      font-size: 40px;
-      margin: 30px 0;
-    }
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-    #status {
-      font-size: 20px;
-      margin: 20px 0;
-    }
+        .flame-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at center, 
+                rgba(255, 100, 0, 0.3) 0%, 
+                rgba(255, 165, 0, 0.2) 30%, 
+                rgba(255, 69, 0, 0.1) 60%, 
+                transparent 100%);
+            animation: flameFlicker 2s ease-in-out infinite alternate;
+        }
 
-    #gameArea {
-      width: 100%;
-      max-width: 350px;
-      height: 350px;
-      margin: 0 auto;
-      border: 3px solid #cc0000;
-      border-radius: 16px;
-      background: url('https://yourusername.github.io/fire_game/background.png') no-repeat center center;
-      background-size: cover;
-      line-height: 350px;
-      font-size: 24px;
-      color: #fff;
-      font-weight: bold;
-    }
+        @keyframes flameFlicker {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 0.9; transform: scale(1.05); }
+        }
 
-    button {
-      font-size: 18px;
-      padding: 10px 20px;
-      margin-top: 30px;
-      background-color: #cc0000;
-      color: white;
-      border: none;
-      border-radius: 8px;
-    }
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffdd00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
 
-    button:hover {
-      background-color: #a00000;
-    }
-  </style>
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.8)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 107, 53, 1)); }
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .score {
+            color: #ffdd00;
+        }
+
+        .timer {
+            color: #ff6b35;
+            font-size: 1.5rem;
+        }
+
+        .arrows-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 300px;
+        }
+
+        .arrow {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .swipe-area {
+            width: 250px;
+            height: 250px;
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .swipe-feedback {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .swipe-feedback.correct {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        .swipe-feedback.wrong {
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+        }
+
+        .swipe-feedback.show {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .start-button, .restart-button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .start-button:hover, .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+        }
+
+        .game-over {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .arrow {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .swipe-area {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .game-info {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>護安神火守護戰 🔥</h1>
-  <div id="direction">請按「開始挑戰」</div>
-  <div id="gameArea">在此滑動！</div>
-  <div id="status"></div>
-  <button onclick="startGame()">開始挑戰</button>
+    <div class="game-container">
+        <div class="flame-effect"></div>
+        
+        <h1 class="title">護安宮 향불 지키기</h1>
+        
+        <div class="game-info">
+            <div class="score">점수: <span id="score">0</span></div>
+            <div class="timer">⏰ <span id="timer">3.0</span></div>
+        </div>
+        
+        <div class="arrows-container" id="arrows-container">
+            <!-- 화살표들이 여기에 동적으로 생성됩니다 -->
+        </div>
+        
+        <div class="swipe-area" id="swipe-area">
+            <div id="swipe-text">화살표 방향으로<br>스와이프하세요!</div>
+            <div class="swipe-feedback" id="swipe-feedback"></div>
+        </div>
+        
+        <div id="start-screen">
+            <button class="start-button" onclick="startGame()">게임 시작</button>
+        </div>
+        
+        <div id="game-over-screen" class="hidden">
+            <div class="game-over">
+                <h2>게임 종료!</h2>
+                <p>최종 점수: <span id="final-score">0</span></p>
+                <p id="game-result"></p>
+            </div>
+            <button class="restart-button" onclick="resetGame()">다시 시작</button>
+        </div>
+    </div>
 
-  <script>
-    const directions = ["←", "↑", "↓", "→"];
-    let current = "";
-    let successCount = 0;
-    let gameEnded = false;
+    <script>
+        let gameState = {
+            isPlaying: false,
+            score: 0,
+            currentPattern: [],
+            currentIndex: 0,
+            timeLeft: 3.0,
+            timerInterval: null,
+            roundTimer: null
+        };
 
-    function startGame() {
-      successCount = 0;
-      gameEnded = false;
-      nextRound();
-    }
+        const directions = ['↑', '↓', '←', '→'];
+        const swipeArea = document.getElementById('swipe-area');
+        let touchStartX = 0;
+        let touchStartY = 0;
 
-    function nextRound() {
-      current = directions[Math.floor(Math.random() * 4)];
-      document.getElementById("direction").innerText = `請向 ${current} 滑動！`;
-      document.getElementById("status").innerText = `成功次數：${successCount}/5`;
-    }
-
-    const area = document.getElementById("gameArea");
-    let startX = 0;
-    let startY = 0;
-
-    area.addEventListener("touchstart", (e) => {
-      const touch = e.touches[0];
-      startX = touch.clientX;
-      startY = touch.clientY;
-    });
-
-    area.addEventListener("touchend", (e) => {
-      if (gameEnded) return;
-
-      const touch = e.changedTouches[0];
-      const deltaX = touch.clientX - startX;
-      const deltaY = touch.clientY - startY;
-      const absX = Math.abs(deltaX);
-      const absY = Math.abs(deltaY);
-
-      let swipe = "";
-      if (Math.max(absX, absY) < 30) return; // 너무 짧으면 무시
-
-      if (absX > absY) {
-        swipe = deltaX > 0 ? "→" : "←";
-      } else {
-        swipe = deltaY > 0 ? "↓" : "↑";
-      }
-
-      if (swipe === current) {
-        successCount++;
-        if (successCount >= 5) {
-          document.getElementById("direction").innerText = "挑戰成功！🔥神火穩住了！";
-          document.getElementById("status").innerText = "";
-          gameEnded = true;
-        } else {
-          nextRound();
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            gameState.isPlaying = true;
+            gameState.score = 0;
+            updateScore();
+            generateNewPattern();
         }
-      } else {
-        document.getElementById("direction").innerText = "挑戰失敗！🔥神火熄滅...";
-        document.getElementById("status").innerText = "";
-        gameEnded = true;
-      }
-    });
-  </script>
+
+        function resetGame() {
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.roundTimer);
+            gameState = {
+                isPlaying: false,
+                score: 0,
+                currentPattern: [],
+                currentIndex: 0,
+                timeLeft: 3.0,
+                timerInterval: null,
+                roundTimer: null
+            };
+            
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('swipe-text').textContent = '화살표 방향으로\n스와이프하세요!';
+            updateScore();
+            updateTimer();
+        }
+
+        function generateNewPattern() {
+            // 2-4개의 랜덤 방향 생성
+            const patternLength = Math.floor(Math.random() * 3) + 2;
+            gameState.currentPattern = [];
+            
+            for (let i = 0; i < patternLength; i++) {
+                gameState.currentPattern.push(Math.floor(Math.random() * 4));
+            }
+            
+            gameState.currentIndex = 0;
+            displayPattern();
+            startTimer();
+        }
+
+        function displayPattern() {
+            const container = document.getElementById('arrows-container');
+            container.innerHTML = '';
+            
+            gameState.currentPattern.forEach((dirIndex, index) => {
+                const arrow = document.createElement('div');
+                arrow.className = 'arrow';
+                arrow.textContent = directions[dirIndex];
+                
+                if (index < gameState.currentIndex) {
+                    arrow.style.opacity = '0.3';
+                    arrow.style.background = 'rgba(0, 255, 136, 0.3)';
+                } else if (index === gameState.currentIndex) {
+                    arrow.style.background = 'rgba(255, 107, 53, 0.8)';
+                    arrow.style.transform = 'scale(1.2)';
+                }
+                
+                container.appendChild(arrow);
+            });
+        }
+
+        function startTimer() {
+            gameState.timeLeft = 3.0;
+            updateTimer();
+            
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft -= 0.1;
+                
+                if (gameState.timeLeft <= 0) {
+                    gameOver();
+                    return;
+                }
+                
+                updateTimer();
+            }, 100);
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = gameState.timeLeft.toFixed(1);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = gameState.score;
+        }
+
+        function checkSwipe(direction) {
+            if (!gameState.isPlaying) return;
+            
+            const expectedDirection = gameState.currentPattern[gameState.currentIndex];
+            const directionMap = { 0: '↑', 1: '↓', 2: '←', 3: '→' };
+            
+            if (direction === expectedDirection) {
+                showSwipeFeedback('✓', 'correct');
+                gameState.currentIndex++;
+                
+                if (gameState.currentIndex >= gameState.currentPattern.length) {
+                    // 패턴 완성!
+                    clearInterval(gameState.timerInterval);
+                    gameState.score += gameState.currentPattern.length * 10;
+                    updateScore();
+                    
+                    setTimeout(() => {
+                        generateNewPattern();
+                    }, 500);
+                } else {
+                    displayPattern();
+                }
+            } else {
+                showSwipeFeedback('✗', 'wrong');
+                gameOver();
+            }
+        }
+
+        function showSwipeFeedback(text, type) {
+            const feedback = document.getElementById('swipe-feedback');
+            feedback.textContent = text;
+            feedback.className = `swipe-feedback ${type} show`;
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 300);
+        }
+
+        function gameOver() {
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.roundTimer);
+            gameState.isPlaying = false;
+            
+            document.getElementById('final-score').textContent = gameState.score;
+            
+            let resultText = '';
+            if (gameState.score >= 100) {
+                resultText = '🔥 향불을 훌륭히 지켜냈습니다! 🔥';
+            } else if (gameState.score >= 50) {
+                resultText = '👍 향불이 꺼질 뻔했지만 잘 지켰어요!';
+            } else {
+                resultText = '💨 향불이 꺼져버렸어요... 다시 도전하세요!';
+            }
+            
+            document.getElementById('game-result').textContent = resultText;
+            document.getElementById('game-over-screen').classList.remove('hidden');
+        }
+
+        // 터치 이벤트 처리
+        swipeArea.addEventListener('touchstart', (e) => {
+            if (!gameState.isPlaying) return;
+            e.preventDefault();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        swipeArea.addEventListener('touchend', (e) => {
+            if (!gameState.isPlaying) return;
+            e.preventDefault();
+            
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            const threshold = 30;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > threshold) {
+                    if (deltaX > 0) {
+                        checkSwipe(3); // 오른쪽
+                    } else {
+                        checkSwipe(2); // 왼쪽
+                    }
+                }
+            } else {
+                if (Math.abs(deltaY) > threshold) {
+                    if (deltaY > 0) {
+                        checkSwipe(1); // 아래
+                    } else {
+                        checkSwipe(0); // 위
+                    }
+                }
+            }
+        });
+
+        // 마우스 이벤트 (데스크톱 테스트용)
+        swipeArea.addEventListener('mousedown', (e) => {
+            if (!gameState.isPlaying) return;
+            touchStartX = e.clientX;
+            touchStartY = e.clientY;
+        });
+
+        swipeArea.addEventListener('mouseup', (e) => {
+            if (!gameState.isPlaying) return;
+            
+            const deltaX = e.clientX - touchStartX;
+            const deltaY = e.clientY - touchStartY;
+            
+            const threshold = 30;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > threshold) {
+                    if (deltaX > 0) {
+                        checkSwipe(3); // 오른쪽
+                    } else {
+                        checkSwipe(2); // 왼쪽
+                    }
+                }
+            } else {
+                if (Math.abs(deltaY) > threshold) {
+                    if (deltaY > 0) {
+                        checkSwipe(1); // 아래
+                    } else {
+                        checkSwipe(0); // 위
+                    }
+                }
+            }
+        });
+
+        // 터치 스크롤 방지
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        // 초기 타이머 표시
+        updateTimer();
+    </script>
 </body>
 </html>
