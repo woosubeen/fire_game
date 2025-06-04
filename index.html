@@ -1,39 +1,180 @@
-.flame-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: radial-gradient(circle at center, 
-                rgba(255, 100, 0, 0.3) 0%, 
-                rgba(255, 165, 0, 0.2) 30%, 
-                rgba(255, 69, 0, 0.1) 60%, 
-                transparent 100%);
-            animation: flameFlicker 2s ease-in-out infinite alternate;
-        }
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>守護聖火 - 護安宮香火守護</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
 
-        .flame-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('flame.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            pointer-events: none;
-            z-index: 1;
-            animation: flameFlicker 2s ease-in-out infinite alternate;
-        }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      background: #000;
+    }
 
-        .flame-image.extinguished {
-            opacity: 0;
-            animation: none;
-        }
+    .game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
 
-        @keyframes flameFlicker {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 0.9; transform: scale(1.05); }
-        }
+    .bg-img,
+    .flame-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .flame-img {
+      z-index: 2;
+      opacity: 0.8;
+      animation: flameFlickerImg 1.5s ease-in-out infinite alternate;
+      transition: opacity 0.5s ease;
+    }
+
+    @keyframes flameFlickerImg {
+      0% {
+        opacity: 0.6;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.9;
+        transform: scale(1.05);
+      }
+    }
+
+    .content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: white;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      color: #ffaa00;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 20px rgba(255,170,0,0.5);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.8)); }
+      to { filter: drop-shadow(0 0 20px rgba(255, 107, 53, 1)); }
+    }
+
+    .score, .timer {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .start-button, .restart-button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <img src="background2.png" class="bg-img" />
+    <img src="flame.png" class="flame-img" id="flame-img" />
+
+    <div class="content">
+      <h1 class="title">護安宮 香火守護</h1>
+      <div class="score">得分: <span id="score">0</span></div>
+      <div class="timer">⏰ <span id="timer">3.0</span></div>
+      <div id="start-screen">
+        <button class="start-button" onclick="startGame()">開始遊戲</button>
+      </div>
+      <div id="game-over-screen" class="hidden">
+        <p>最終得分: <span id="final-score">0</span></p>
+        <p id="game-result"></p>
+        <button class="restart-button" onclick="resetGame()">重新開始</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let gameState = {
+      isPlaying: false,
+      score: 0,
+      timeLeft: 3.0,
+      timerInterval: null
+    };
+
+    function startGame() {
+      gameState.isPlaying = true;
+      gameState.score = 0;
+      updateScore();
+      updateTimer();
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-over-screen').classList.add('hidden');
+      const flameImg = document.getElementById('flame-img');
+      flameImg.style.opacity = '0.8';
+      flameImg.style.animation = 'flameFlickerImg 1.5s ease-in-out infinite alternate';
+    }
+
+    function resetGame() {
+      gameState.isPlaying = false;
+      gameState.score = 0;
+      updateScore();
+      updateTimer();
+      document.getElementById('start-screen').style.display = 'block';
+      document.getElementById('game-over-screen').classList.add('hidden');
+      const flameImg = document.getElementById('flame-img');
+      flameImg.style.opacity = '0.8';
+      flameImg.style.animation = 'flameFlickerImg 1.5s ease-in-out infinite alternate';
+    }
+
+    function gameOver() {
+      gameState.isPlaying = false;
+      document.getElementById('final-score').textContent = gameState.score;
+      const flameImg = document.getElementById('flame-img');
+      let resultText = '';
+      if (gameState.score >= 200) {
+        resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+        flameImg.style.opacity = '0.8';
+        flameImg.style.animation = 'flameFlickerImg 1.5s ease-in-out infinite alternate';
+      } else {
+        resultText = '💨 香火熄滅了...請重新挑戰！';
+        flameImg.style.opacity = '0';
+        flameImg.style.animation = 'none';
+      }
+      document.getElementById('game-result').textContent = resultText;
+      document.getElementById('game-over-screen').classList.remove('hidden');
+    }
+
+    function updateScore() {
+      document.getElementById('score').textContent = gameState.score;
+    }
+
+    function updateTimer() {
+      document.getElementById('timer').textContent = gameState.timeLeft.toFixed(1);
+    }
+  </script>
+</body>
+</html>
