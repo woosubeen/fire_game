@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불꽃지키기 - 護安宮 향불 지키기</title>
+    <title>守護聖火 - 護安宮香火守護</title>
     <style>
         * {
             margin: 0;
@@ -219,10 +219,10 @@
     <div class="game-container">
         <div class="flame-effect"></div>
         
-        <h1 class="title">護安宮 향불 지키기</h1>
+        <h1 class="title">護安宮 香火守護</h1>
         
         <div class="game-info">
-            <div class="score">점수: <span id="score">0</span></div>
+            <div class="score">得分: <span id="score">0</span></div>
             <div class="timer">⏰ <span id="timer">3.0</span></div>
         </div>
         
@@ -231,21 +231,21 @@
         </div>
         
         <div class="swipe-area" id="swipe-area">
-            <div id="swipe-text">화살표 방향으로<br>스와이프하세요!</div>
+            <div id="swipe-text">請依箭頭方向<br>滑動螢幕！</div>
             <div class="swipe-feedback" id="swipe-feedback"></div>
         </div>
         
         <div id="start-screen">
-            <button class="start-button" onclick="startGame()">게임 시작</button>
+            <button class="start-button" onclick="startGame()">開始遊戲</button>
         </div>
         
         <div id="game-over-screen" class="hidden">
             <div class="game-over">
-                <h2>게임 종료!</h2>
-                <p>최종 점수: <span id="final-score">0</span></p>
+                <h2>遊戲結束！</h2>
+                <p>最終得分: <span id="final-score">0</span></p>
                 <p id="game-result"></p>
             </div>
-            <button class="restart-button" onclick="resetGame()">다시 시작</button>
+            <button class="restart-button" onclick="resetGame()">重新開始</button>
         </div>
     </div>
 
@@ -289,7 +289,7 @@
             
             document.getElementById('start-screen').classList.remove('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
-            document.getElementById('swipe-text').textContent = '화살표 방향으로\n스와이프하세요!';
+            document.getElementById('swipe-text').textContent = '請依箭頭方向\n滑動螢幕！';
             updateScore();
             updateTimer();
         }
@@ -400,11 +400,11 @@
             
             let resultText = '';
             if (gameState.score >= 100) {
-                resultText = '🔥 향불을 훌륭히 지켜냈습니다! 🔥';
+                resultText = '🔥 完美守護香火！功德無量！ 🔥';
             } else if (gameState.score >= 50) {
-                resultText = '👍 향불이 꺼질 뻔했지만 잘 지켰어요!';
+                resultText = '👍 香火差點熄滅，但守護得很好！';
             } else {
-                resultText = '💨 향불이 꺼져버렸어요... 다시 도전하세요!';
+                resultText = '💨 香火熄滅了...請重新挑戰！';
             }
             
             document.getElementById('game-result').textContent = resultText;
