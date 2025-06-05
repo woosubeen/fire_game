@@ -251,6 +251,11 @@
                 font-size: 1rem;
             }
         }
+
+        .fixed-flame {
+            animation: none !important;
+            opacity: 0.95 !important; /* 불씨가 선명하게 유지되도록 고정값 설정 */
+        }
     
     </style>
 </head>
@@ -311,6 +316,7 @@
             gameState.score = 0;
             updateScore();
             document.getElementById('flame-overlay').classList.remove('hidden-flame');
+            document.getElementById('flame-overlay').classList.remove('fixed-flame');
             generateNewPattern();
         }
 
@@ -442,8 +448,9 @@
     const flameImg = document.getElementById('flame-overlay');
 
     if (gameState.score >= 200) {
-        resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
-        flameImg.classList.remove('hidden-flame');
+    resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+    flameImg.classList.remove('hidden-flame');
+    flameImg.classList.add('fixed-flame'); // ✅ 애니메이션 정지
     } else {
         resultText = '💨 香火熄滅了...請重新挑戰！';
         flameImg.classList.add('hidden-flame');
