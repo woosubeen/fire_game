@@ -153,10 +153,10 @@
         }
 
         .swipe-area {
+            position: relative;  /* ✅ 꼭 있어야 함! */
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
             width: 250px;
             height: 250px;
             border: 3px dashed rgba(255, 255, 255, 0.5);
@@ -179,11 +179,6 @@
             z-index: 8;
         }
 
-        #swipe-text, .swipe-feedback {
-            z-index: 7;
-            position: relative;
-        }
-
         .swipe-feedback.correct {
             color: #00ff88;
             text-shadow: 0 0 10px #00ff88;
@@ -200,12 +195,14 @@
         }
 
         #swipe-text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
             line-height: 1.5;
+            z-index: 7;
+            pointer-events: none;
         }
 
         .start-button, .restart-button {
