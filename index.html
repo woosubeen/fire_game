@@ -414,6 +414,10 @@
                     clearInterval(gameState.timerInterval);
                     gameState.score += gameState.currentPattern.length * 10;
                     updateScore();
+
+                    if (gameState.score >= 200) {
+                        document.getElementById('flame-overlay').classList.add('fixed-flame');
+                    }
                     
                     setTimeout(() => {
                         generateNewPattern();
