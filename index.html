@@ -469,6 +469,7 @@
             resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
             flameImg.classList.remove('hidden-flame');
             flameImg.classList.add('fixed-flame'); // ✅ 애니메이션 정지
+            document.getElementById('arrows-container').innerHTML = '';
             } else {
                 resultText = '💨 香火熄滅了...請重新挑戰！';
                 flameImg.classList.add('hidden-flame');
