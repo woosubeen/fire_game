@@ -33,14 +33,15 @@
             background-size: cover;
             background-position: center;
             opacity: 0.85;
-            animation: flameGlow 1.5s infinite ease-in-out alternate;
+            animation: flameFloat 1.5s infinite ease-in-out; 
             pointer-events: none;
             z-index: 4;
         }
         
-        @keyframes flameGlow {
-            0%   { opacity: 0.75; }
-            100% { opacity: 0.95; }
+        @keyframes flameFloat {
+            0%   { transform: translateY(0px); opacity: 0.75; }
+            50%  { transform: translateY(-2px); opacity: 0.9; }
+            100% { transform: translateY(0px); opacity: 0.8; }
         }
         
         .hidden-flame {
