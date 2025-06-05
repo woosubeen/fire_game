@@ -331,7 +331,6 @@
             updateScore();
             document.getElementById('flame-overlay').classList.remove('hidden-flame');
             document.getElementById('flame-overlay').classList.remove('fixed-flame');
-            document.getElementById('swipe-area').style.display = 'flex';
             generateNewPattern();
         }
 
@@ -471,7 +470,6 @@
             flameImg.classList.remove('hidden-flame');
             flameImg.classList.add('fixed-flame'); // ✅ 애니메이션 정지
             document.getElementById('arrows-container').innerHTML = '';
-            document.getElementById('swipe-area').style.display = 'none';
             } else {
                 resultText = '💨 香火熄滅了...請重新挑戰！';
                 flameImg.classList.add('hidden-flame');
