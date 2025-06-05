@@ -221,12 +221,34 @@
                 font-size: 1rem;
             }
         }
+        .flame-img {
+            position: absolute;
+            width: 100px;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.9;
+            animation: flameWobble 1s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        @keyframes flameWobble {
+            0%   { transform: translateX(-50%) rotate(-2deg) scale(1); }
+            50%  { transform: translateX(-50%) rotate(2deg) scale(1.05); }
+            100% { transform: translateX(-50%) rotate(-2deg) scale(1); }
+        }
+        
+        .hidden-flame {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="flame-effect"></div>
-        
+        <img src="flame.png" id="flame-img" class="flame-img" alt="flame">
+    <h1 class="title">護安宮 香火守護</h1>
         <h1 class="title">護安宮 香火守護</h1>
         
         <div class="game-info">
@@ -279,6 +301,7 @@
             gameState.isPlaying = true;
             gameState.score = 0;
             updateScore();
+            document.getElementById('flame-img').classList.remove('hidden-flame');  // ✅ 이 줄 추가
             generateNewPattern();
         }
 
@@ -407,10 +430,14 @@
     document.getElementById('final-score').textContent = gameState.score;
 
     let resultText = '';
+    const flameImg = document.getElementById('flame-img');
+
     if (gameState.score >= 200) {
         resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+        flameImg.classList.remove('hidden-flame');
     } else {
         resultText = '💨 香火熄滅了...請重新挑戰！';
+        flameImg.classList.add('hidden-flame');
     }
 
     document.getElementById('game-result').textContent = resultText;
