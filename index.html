@@ -166,6 +166,7 @@
             backdrop-filter: blur(5px);
             margin-bottom: 2rem;
             position: relative;
+            z-index: 6;
         }
 
         .swipe-feedback {
@@ -174,6 +175,11 @@
             font-weight: bold;
             opacity: 0;
             transition: all 0.3s ease;
+        }
+
+        #swipe-text, .swipe-feedback {
+            z-index: 7;
+            position: relative;
         }
 
         .swipe-feedback.correct {
@@ -442,27 +448,27 @@
         }
 
         function gameOver() {
-    clearInterval(gameState.timerInterval);
-    clearTimeout(gameState.roundTimer);
-    gameState.isPlaying = false;
-
-    document.getElementById('final-score').textContent = gameState.score;
-
-    let resultText = '';
-    const flameImg = document.getElementById('flame-overlay');
-
-    if (gameState.score >= 200) {
-    resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
-    flameImg.classList.remove('hidden-flame');
-    flameImg.classList.add('fixed-flame'); // ✅ 애니메이션 정지
-    } else {
-        resultText = '💨 香火熄滅了...請重新挑戰！';
-        flameImg.classList.add('hidden-flame');
-    }
-
-    document.getElementById('game-result').textContent = resultText;
-    document.getElementById('game-over-screen').classList.remove('hidden');
-}
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.roundTimer);
+            gameState.isPlaying = false;
+        
+            document.getElementById('final-score').textContent = gameState.score;
+        
+            let resultText = '';
+            const flameImg = document.getElementById('flame-overlay');
+        
+            if (gameState.score >= 200) {
+            resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+            flameImg.classList.remove('hidden-flame');
+            flameImg.classList.add('fixed-flame'); // ✅ 애니메이션 정지
+            } else {
+                resultText = '💨 香火熄滅了...請重新挑戰！';
+                flameImg.classList.add('hidden-flame');
+            }
+        
+            document.getElementById('game-result').textContent = resultText;
+            document.getElementById('game-over-screen').classList.remove('hidden');
+        }
 
         // 터치 이벤트 처리
         swipeArea.addEventListener('touchstart', (e) => {
