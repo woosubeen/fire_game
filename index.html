@@ -103,19 +103,14 @@
         }
 
         .game-info {
-            position: fixed;  /* ✅ 화면 기준으로 고정 */
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             justify-content: space-between;
-            align-items: center;
             width: 90%;
             max-width: 400px;
+            margin-bottom: 2rem;
             font-size: 1.2rem;
             font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            z-index: 100;
         }
 
         .score {
@@ -235,18 +230,10 @@
         }
 
         #game-over-screen {
-            position: absolute;  /* ← 레이아웃 밀지 않게 */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.6); /* 선택 사항: 어두운 배경 */
-            padding: 20px;
-            border-radius: 20px;
         }
 
         #game-over-screen.hidden {
@@ -282,28 +269,6 @@
         .fixed-flame {
             animation: none !important;
             opacity: 0.95 !important; /* 불씨가 선명하게 유지되도록 고정값 설정 */
-        }
-
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; /* 수직 흔들림 방지 */
-            width: 90%;
-            max-width: 400px;
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        
-        .score, .timer {
-            min-width: 140px;         /* 고정 너비 줘서 밀림 방지 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.2;
         }
     
     </style>
