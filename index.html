@@ -50,7 +50,6 @@
             pointer-events: none;
             opacity: 0.8;
             animation: flameFlicker 1.5s ease-in-out infinite alternate;
-            z-index: 1;
         }
 
         .flame-image.stable {
@@ -83,7 +82,6 @@
                 rgba(255, 69, 0, 0.1) 60%, 
                 transparent 100%);
             animation: flameFlicker 2s ease-in-out infinite alternate;
-            z-index: 2;
         }
 
         @keyframes flameFlicker {
@@ -99,8 +97,6 @@
             color: #ffaa00;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 20px rgba(255,170,0,0.5);
             animation: glow 2s ease-in-out infinite alternate;
-            position: relative;
-            z-index: 10;
         }
 
         @keyframes glow {
@@ -117,8 +113,6 @@
             font-size: 1.2rem;
             font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            position: relative;
-            z-index: 10;
         }
 
         .score {
@@ -137,8 +131,6 @@
             flex-wrap: wrap;
             justify-content: center;
             max-width: 300px;
-            position: relative;
-            z-index: 10;
         }
 
         .arrow {
@@ -176,7 +168,6 @@
             backdrop-filter: blur(5px);
             margin-bottom: 2rem;
             position: relative;
-            z-index: 10;
         }
 
         .swipe-feedback {
@@ -231,8 +222,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
-            z-index: 10;
         }
 
         #game-over-screen.hidden {
