@@ -37,6 +37,38 @@
             justify-content: center;
         }
 
+        .flame-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('flame.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: flameFlicker 1.5s ease-in-out infinite alternate;
+        }
+
+        .flame-image.stable {
+            animation: none;
+            opacity: 0.9;
+        }
+
+        .flame-image.hidden {
+            opacity: 0;
+        }
+
+        @keyframes flameFlicker {
+            0% { opacity: 0.6; }
+            25% { opacity: 0.8; }
+            50% { opacity: 0.7; }
+            75% { opacity: 0.9; }
+            100% { opacity: 0.75; }
+        }
+
         .flame-effect {
             position: absolute;
             top: 0;
@@ -225,6 +257,7 @@
 </head>
 <body>
     <div class="game-container">
+        <div class="flame-image" id="flame-image"></div>
         <div class="flame-effect"></div>
         
         <h1 class="title">護安宮 香火守護</h1>
@@ -270,8 +303,31 @@
 
         const directions = ['↑', '↓', '←', '→'];
         const swipeArea = document.getElementById('swipe-area');
+        const flameImage = document.getElementById('flame-image');
         let touchStartX = 0;
         let touchStartY = 0;
+
+        function updateFlameState() {
+            if (!gameState.isPlaying) {
+                // 게임이 시작되지 않았거나 끝났을 때
+                if (gameState.score >= 200) {
+                    // 200점 이상으로 게임 끝남 - 불씨 고정
+                    flameImage.className = 'flame-image stable';
+                } else {
+                    // 200점 미만으로 게임 끝남 - 불씨 꺼짐
+                    flameImage.className = 'flame-image hidden';
+                }
+            } else {
+                // 게임 중일 때
+                if (gameState.score >= 200) {
+                    // 200점 이상 - 불씨 고정
+                    flameImage.className = 'flame-image stable';
+                } else {
+                    // 200점 미만 - 불씨 흔들림
+                    flameImage.className = 'flame-image';
+                }
+            }
+        }
 
         function startGame() {
             document.getElementById('start-screen').classList.add('hidden');
@@ -279,6 +335,7 @@
             gameState.isPlaying = true;
             gameState.score = 0;
             updateScore();
+            updateFlameState();
             generateNewPattern();
         }
 
@@ -300,6 +357,7 @@
             document.getElementById('swipe-text').textContent = '請依箭頭方向\n滑動螢幕！';
             updateScore();
             updateTimer();
+            updateFlameState();
         }
 
         function generateNewPattern() {
@@ -376,6 +434,7 @@
                     clearInterval(gameState.timerInterval);
                     gameState.score += gameState.currentPattern.length * 10;
                     updateScore();
+                    updateFlameState(); // 점수 업데이트 후 불꽃 상태 업데이트
                     
                     setTimeout(() => {
                         generateNewPattern();
@@ -400,22 +459,23 @@
         }
 
         function gameOver() {
-    clearInterval(gameState.timerInterval);
-    clearTimeout(gameState.roundTimer);
-    gameState.isPlaying = false;
+            clearInterval(gameState.timerInterval);
+            clearTimeout(gameState.roundTimer);
+            gameState.isPlaying = false;
 
-    document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('final-score').textContent = gameState.score;
 
-    let resultText = '';
-    if (gameState.score >= 200) {
-        resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
-    } else {
-        resultText = '💨 香火熄滅了...請重新挑戰！';
-    }
+            let resultText = '';
+            if (gameState.score >= 200) {
+                resultText = '🔥 香火完美守護成功！你是護安英雄！ 🔥';
+            } else {
+                resultText = '💨 香火熄滅了...請重新挑戰！';
+            }
 
-    document.getElementById('game-result').textContent = resultText;
-    document.getElementById('game-over-screen').classList.remove('hidden');
-}
+            document.getElementById('game-result').textContent = resultText;
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            updateFlameState(); // 게임 종료 후 불꽃 상태 업데이트
+        }
 
         // 터치 이벤트 처리
         swipeArea.addEventListener('touchstart', (e) => {
@@ -495,8 +555,9 @@
             e.preventDefault();
         }, { passive: false });
 
-        // 초기 타이머 표시
+        // 초기 타이머 표시 및 불꽃 상태 설정
         updateTimer();
+        updateFlameState();
     </script>
 </body>
 </html>
